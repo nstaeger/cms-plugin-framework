@@ -1,4 +1,3 @@
 # CMS Plugin Framework
 
-A framework to help rapid plugin development for you CMS.
-(Currently only supports WordPress)
+A framework for rapid CMS plugin development. (Currently only supports WordPress)
