@@ -55,8 +55,8 @@ class TemplateRenderer
     /**
      * Renders a template.
      *
-     * @param string|TemplateReferenceInterface $name       A template name or a TemplateReferenceInterface instance
-     * @param array                             $parameters An array of parameters to pass to the template
+     * @param string $template   A template name
+     * @param array  $parameters An array of parameters to pass to the template
      *
      * @return string The evaluated template as a string
      *
