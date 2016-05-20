@@ -4,6 +4,14 @@ namespace Nstaeger\CmsPluginFramework;
 
 class Configuration
 {
+    const CONTROLLER_NAMESPACE = 'controller_namespace';
+    const OPTION_PREFIX = 'option_prefix';
+    const PLUGIN_DIR = 'plugin_dir';
+    const PLUGIN_MAIN_FILE = 'plugin_main_file';
+    const PLUGIN_URL = 'plugin_url';
+    const REST_PREFIX = 'rest_prefix';
+    const VIEW_DIR = 'view_directory';
+
     /**
      * @var array
      */
@@ -17,22 +25,17 @@ class Configuration
     public function __construct($config)
     {
         $this->config = $config;
+        $this->validate();
     }
 
     /**
+     * Get the namespace for controllers
+     *
      * @return string
      */
     public function getControllerNamespace()
     {
-        return $this->config['controller_namespace'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getMainPluginFile()
-    {
-        return $this->config['plugin_main_file'];
+        return $this->getValue(self::CONTROLLER_NAMESPACE);
     }
 
     /**
@@ -42,7 +45,15 @@ class Configuration
      */
     public function getDirectory()
     {
-        return $this->config['plugin_dir'];
+        return $this->getValue(self::PLUGIN_DIR);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMainPluginFile()
+    {
+        return $this->getValue(self::PLUGIN_MAIN_FILE);
     }
 
     /**
@@ -52,15 +63,17 @@ class Configuration
      */
     public function getOptionPrefix()
     {
-        return $this->config['option_prefix'];
+        return $this->getValue(self::OPTION_PREFIX);
     }
 
     /**
      * Get the rest prefix url/string
+     *
+     * @return string
      */
     public function getRestPrefix()
     {
-        return $this->config['rest_prefix'];
+        return $this->getValue(self::REST_PREFIX);
     }
 
     /**
@@ -70,7 +83,7 @@ class Configuration
      */
     public function getUrl()
     {
-        return $this->config['plugin_url'];
+        return $this->getValue(self::PLUGIN_URL);
     }
 
     /**
@@ -80,6 +93,39 @@ class Configuration
      */
     public function getViewDirectory()
     {
-        return $this->getDirectory() . DIRECTORY_SEPARATOR . 'views';
+        return $this->getValue(self::VIEW_DIR, $this->getDirectory() . DIRECTORY_SEPARATOR . 'views');
+    }
+
+    /**
+     * Get the value of a key within the configuration. If it is not set get the default.
+     *
+     * @param string $key
+     * @param mixed  $default
+     * @return mixed
+     */
+    private function getValue($key, $default = null)
+    {
+        return isset($this->config[$key])
+            ? $this->config[$key]
+            : $default;
+    }
+
+    /**
+     * Validate the configuration
+     */
+    private function validate()
+    {
+        if (!isset($this->config[self::CONTROLLER_NAMESPACE])) {
+            throw new \InvalidArgumentException("Configuration must contain a value for CONTROLLER_NAMESPACE");
+        }
+        if (!isset($this->config[self::PLUGIN_DIR])) {
+            throw new \InvalidArgumentException("Configuration must contain a value for PLUGIN_DIR");
+        }
+        if (!isset($this->config[self::PLUGIN_MAIN_FILE])) {
+            throw new \InvalidArgumentException("Configuration must contain a value for PLUGIN_MAIN_FILE");
+        }
+        if (!isset($this->config[self::PLUGIN_URL])) {
+            throw new \InvalidArgumentException("Configuration must contain a value for PLUGIN_URL");
+        }
     }
 }
