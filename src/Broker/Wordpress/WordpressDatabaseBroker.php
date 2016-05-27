@@ -42,14 +42,14 @@ class WordpressDatabaseBroker implements DatabaseBroker
         return $this->databaseConnection->get_results($this->parsePrefix($query), ARRAY_A);
     }
 
-    public function insert($table, array $data)
+    public function insert($table, array $data, $format = null)
     {
-        return $this->databaseConnection->insert($this->parsePrefix($table), $data);
+        return $this->databaseConnection->insert($this->parsePrefix($table), $data, $format);
     }
 
-    public function replace($table, array $data)
+    public function update($table, array $data, array $where, $format = null, $where_format = null)
     {
-        return $this->databaseConnection->replace($this->parsePrefix($table), $data);
+        return $this->databaseConnection->update($this->parsePrefix($table), $data, $where, $format, $where_format);
     }
 
     private function parsePrefix($query)
