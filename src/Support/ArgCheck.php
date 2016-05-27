@@ -6,81 +6,77 @@ use InvalidArgumentException;
 
 class ArgCheck
 {
-    public static function isArray($arg)
+    public static function isArray($arg, $argName = "argument")
     {
         if (!is_array($arg)) {
-            throw new InvalidArgumentException(
-                sprintf("Expected an array, but was %s, containing: %s", gettype($arg), $arg)
-            );
+            self::throwException('an array', $arg, $argName);
         }
     }
 
-    public static function isDateString($arg)
+    public static function isDateString($arg, $argName = "argument")
     {
-        self::isString($arg);
+        self::isString($arg, $argName);
 
         $regex = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}/';
 
         if (preg_match($regex, $arg) != 1) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    "Expected a string containing a date in format YYYY-mm-dd, but was %s, containing: %s",
-                    gettype($arg),
-                    $arg
-                )
-            );
+            self::throwException('a string containing a date in format YYYY-mm-dd', $arg, $argName);
         }
     }
 
-    public static function isEmail($arg)
+    public static function isEmail($arg, $argName = "argument")
     {
-        self::isString($arg);
+        self::isString($arg, $argName);
 
         if (!is_email($arg)) {
-            throw new InvalidArgumentException(
-                sprintf("Expected an email, but was %s, containing: %s", gettype($arg), $arg)
-            );
+            self::throwException('an email', $arg, $argName);
         }
     }
 
-    public static function isInt($arg)
+    public static function isInt($arg, $argName = "argument")
     {
         if (!is_int($arg) && !is_numeric($arg)) {
-            throw new InvalidArgumentException(
-                sprintf("Expected an integer, but was %s, containing: %s", gettype($arg), $arg)
-            );
+            self::throwException('an integer/numeric', $arg, $argName);
         }
     }
 
-    public static function isIp($arg)
+    public static function isIp($arg, $argName = "argument")
     {
-        self::isString($arg);
+        self::isString($arg, $argName);
 
         if (!filter_var($arg, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
             && !filter_var($arg, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
         ) {
-            throw new InvalidArgumentException("Expected an IP, but was " . $arg);
+            self::throwException('an IP', $arg, $argName);
         }
     }
 
-    public static function isString($arg)
+    public static function isString($arg, $argName = "argument")
     {
         if (!is_string($arg)) {
-            throw new InvalidArgumentException("Expected a string, but was: " . gettype($arg));
+            self::throwException('a string', $arg, $argName);
         }
     }
 
-    public static function notEmpty($arg)
+    public static function notEmpty($arg, $argName = "argument")
     {
         if (empty($arg)) {
-            throw new InvalidArgumentException("Expected not to be empty, but was " . $arg);
+            self::throwException('not empty', $arg, $argName);
         }
     }
 
-    public static function notNull($arg)
+    public static function notNull($arg, $argName = "argument")
     {
         if ($arg == null) {
-            throw new InvalidArgumentException("Expected not null, but was " . $arg);
+            self::throwException('not null', $arg, $argName);
         }
+    }
+
+    private static function throwException($expected, $arg, $argName) {
+        throw new InvalidArgumentException(self::generateMessage($expected, $arg, $argName));
+    }
+
+    private static function generateMessage($expected, $actual, $argName) {
+        return sprintf("Expected %s to be %s, but was: (%s) %s", $argName, $expected, gettype($actual), $actual);
     }
 }
