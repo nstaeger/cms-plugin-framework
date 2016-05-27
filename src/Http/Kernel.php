@@ -3,6 +3,7 @@
 namespace Nstaeger\CmsPluginFramework\Http;
 
 use InvalidArgumentException;
+use Nstaeger\CmsPluginFramework\Database\DatabaseException;
 use Nstaeger\CmsPluginFramework\Http\Exceptions\HttpException;
 use Nstaeger\CmsPluginFramework\Http\Exceptions\HttpInternalErrorException;
 use Nstaeger\CmsPluginFramework\Http\Exceptions\HttpNotFoundException;
@@ -45,6 +46,9 @@ class Kernel
             return $response;
         } catch (HttpException $e) {
             return new Response("Exception: " . $e->getMessage(), $e->getStatusCode());
+        }
+        catch (DatabaseException $e) {
+            return new Response("DatabaseException: " . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         catch (InvalidArgumentException $e) {
             return new Response("InvalidArgumentException: " . $e->getMessage(), Response::HTTP_BAD_REQUEST);

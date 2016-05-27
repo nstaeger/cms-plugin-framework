@@ -88,7 +88,7 @@ class WordpressDatabaseBroker implements DatabaseBroker
 
     private function wasGood($result)
     {
-        if (!$result) {
+        if ($result === false) {
             throw new DatabaseException($this->getLastError(), $this->getLastQuery());
         }
     }
