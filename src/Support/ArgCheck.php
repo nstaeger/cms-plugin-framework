@@ -19,9 +19,9 @@ class ArgCheck
     {
         self::isString($arg);
 
-        $regex = '^[0-9]{4}-[0-9]{2}-[0-9]{2}$';
+        $regex = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}/';
 
-        if (!preg_match($regex, $arg)) {
+        if (preg_match($regex, $arg) != 1) {
             throw new InvalidArgumentException(
                 sprintf(
                     "Expected a string containing a date in format YYYY-mm-dd, but was %s, containing: %s",
