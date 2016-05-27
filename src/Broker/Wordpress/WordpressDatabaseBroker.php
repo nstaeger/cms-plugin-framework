@@ -47,6 +47,11 @@ class WordpressDatabaseBroker implements DatabaseBroker
         return $this->databaseConnection->insert($this->parsePrefix($table), $data);
     }
 
+    public function replace($table, array $data)
+    {
+        return $this->databaseConnection->replace($this->parsePrefix($table), $data);
+    }
+
     private function parsePrefix($query)
     {
         return str_replace("@@", $this->databaseConnection->prefix, $query);

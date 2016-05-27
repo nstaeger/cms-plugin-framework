@@ -52,4 +52,14 @@ interface DatabaseBroker
      * @return int|false The number of rows inserted, or false on error.
      */
     function insert($table, array $data);
+
+    /**
+     * Insert or eplace a row in(to) a table.
+     *
+     * @param string       $table  Table name
+     * @param array        $data   Data to insert (in column => value pairs).
+     *                             Both $data columns and $data values should be "raw" (neither should be SQL escaped).
+     *                             Sending a null value will cause the column to be set to NULL - the corresponding format is ignored in this case.
+     */
+    function replace($table, array $data);
 }
