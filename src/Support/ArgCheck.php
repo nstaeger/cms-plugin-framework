@@ -20,7 +20,7 @@ class ArgCheck
         $regex = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}/';
 
         if (preg_match($regex, $arg) != 1) {
-            self::throwException('a string containing a date in format YYYY-mm-dd', $arg, $argName);
+            self::throwException('a string containing a date in format yyyy-MM-dd', $arg, $argName);
         }
     }
 
