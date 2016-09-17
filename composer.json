@@ -1,7 +1,7 @@
 {
     "name": "nstaeger/cms-plugin-framework",
     "description": "A PHP framework for rapid CMS plugin development",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "authors": [
         {
             "name": "Nicolai Stäger",
