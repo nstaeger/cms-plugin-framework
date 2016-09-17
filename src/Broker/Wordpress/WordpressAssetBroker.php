@@ -70,7 +70,12 @@ class WordpressAssetBroker implements AssetBroker
 
             // TODO register script first with wp_register_script
             $path = $this->urlPrefix . $asset->getUrl();
-            wp_enqueue_script($asset->getName(), $path);
+
+            if ($asset->getType() == AssetItem::TYPE_STYLE) {
+                wp_enqueue_style($asset->getName(), $path);
+            } else {
+                wp_enqueue_script($asset->getName(), $path);
+            }
         }
     }
 
@@ -79,7 +84,12 @@ class WordpressAssetBroker implements AssetBroker
         foreach ($this->assets as $asset) {
             // TODO register script first with wp_register_script
             $path = $this->urlPrefix . $asset->getUrl();
-            wp_enqueue_script($asset->getName(), $path);
+
+            if ($asset->getType() == AssetItem::TYPE_STYLE) {
+                wp_enqueue_style($asset->getName(), $path);
+            } else {
+                wp_enqueue_script($asset->getName(), $path);
+            }
 
             // TODO this should be solved in another way
             wp_localize_script($asset->getName(), 'ajaxurl', admin_url('admin-ajax.php'));

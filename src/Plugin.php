@@ -89,7 +89,7 @@ class Plugin extends Container
     /**
      * Is being called automatically, when the plugin is being activated
      */
-    protected function activate()
+    public function activate()
     {
         // noop
     }
@@ -97,7 +97,7 @@ class Plugin extends Container
     /**
      * is being called automatically, when the plugin is being deactivated
      */
-    protected function deactivate()
+    public function deactivate()
     {
         // noop
     }
