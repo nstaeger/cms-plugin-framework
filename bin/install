@@ -1,0 +1,121 @@
+#!/usr/bin/env php
+<?php
+
+// If the user has not entered all required arguments, stop the script and tell him how to use it properly.
+if (sizeof($argv) < 4) {
+    line(sprintf("Usage: %s <db-name> <db-user> <db-pass> [db-host] [wp-version]", $argv[0]));
+    exit(1);
+}
+
+// Extract all information from the user's input
+$databaseName = $argv[1];
+$databaseUser = $argv[2];
+$databasePassword = $argv[3];
+$databaseHost = array_key_exists(4, $argv) ? $argv[4] : 'localhost';
+$wordPressVersion = array_key_exists(5, $argv) ? $argv[5] : 'latest';
+
+// Prepare the paths to the temporary directories
+$tmpDirectory = './tmp';
+$tmpWordPressDirectory = $tmpDirectory;
+$tmpTestCoreDirectory = $tmpDirectory . DIRECTORY_SEPARATOR . 'wordpress-tests-lib';
+
+// If the given version is not a real version-number, then get the latest version
+if (!preg_match('/^[0-9]+\.[0-9]+(\.[0-9]+)?$/', $wordPressVersion)) {
+    $check = file_get_contents('http://api.wordpress.org/core/version-check/1.7/');
+    $check = json_decode($check);
+
+    if (!isset($check->offers) || !is_array($check->offers) || !isset($check->offers[0]->version)) {
+        line(sprintf("Could not find version %s. Aborting.", $wordPressVersion));
+        exit(1);
+    }
+
+    $wordPressVersion = $check->offers[0]->version;
+}
+
+createTmpDirectory($tmpDirectory);
+installWordPress($wordPressVersion, $tmpWordPressDirectory);
+installTestSuite($wordPressVersion, $tmpTestCoreDirectory, $databaseName, $databaseUser, $databasePassword, $databaseHost);
+createDatabase($databaseName, $databaseUser, $databasePassword, $databaseHost);
+
+
+function createTmpDirectory($dir)
+{
+    if (!is_dir($dir)) {
+        line(sprintf("Create tmp directory '%s'", $dir));
+        mkdir($dir);
+    }
+}
+
+function installWordPress($version, $destinationDir)
+{
+    line(sprintf("Starting installation of WordPress version %s", $version));
+
+    line2("Downloading WordPress...");
+    $tarballUrl = sprintf('https://wordpress.org/wordpress-%s.tar.gz', $version);
+    $tarballDestination = $destinationDir . DIRECTORY_SEPARATOR . 'wordpress.tar.gz';
+    file_put_contents($tarballDestination, fopen($tarballUrl, 'r'));
+    line2("Download completed.");
+
+    line2("Unpacking tarball...");
+    $phar = new PharData($tarballDestination);
+    $phar->extractTo($destinationDir, null, true);
+    line2("Unpacking completed.");
+
+    line2("Deleting tarball...");
+    unlink($tarballDestination);
+    line2("Tarball deleted.");
+}
+
+function installTestSuite($version, $destinationDir, $databaseName, $databaseUser, $databasePassword, $databaseHost)
+{
+    line(sprintf("Starting installation of WordPress Test Suite version %s", $version));
+
+    line2('Checkout testsuite from SVN...');
+    $svnUrl = sprintf('https://develop.svn.wordpress.org/tags/%s/tests/phpunit/includes/', $version);
+    $svnDestination = $destinationDir . DIRECTORY_SEPARATOR . 'includes';
+    exec(sprintf('svn co --quiet %s %s', $svnUrl, $svnDestination));
+    line2('Checkout completed.');
+
+    line2('Create wp-tests-config.php...');
+    $configUrl = sprintf('https://develop.svn.wordpress.org/tags/%s/wp-tests-config-sample.php', $version);
+    $configDestination = $destinationDir . DIRECTORY_SEPARATOR . 'wp-tests-config.php';
+    $wpTestConfig = file_get_contents($configUrl);
+    // TODO make the ABSPATH replacement dynamic
+    $wpTestConfig = str_replace(
+        array('dirname( __FILE__ ) . \'/src/\'', 'youremptytestdbnamehere', 'yourusernamehere', 'yourpasswordhere', 'localhost'),
+        array('./tmp/wordpress', $databaseName, $databaseUser, $databasePassword, $databaseHost),
+        $wpTestConfig
+    );
+    file_put_contents($configDestination, $wpTestConfig);
+    line2('wp-tests-config.php created.');
+}
+
+function createDatabase($databaseName, $databaseUser, $databasePassword, $databaseHost)
+{
+    line(sprintf("Creating the database '%s'", $databaseName));
+
+    $connection = new mysqli($databaseHost, $databaseUser, $databasePassword);
+    if ($connection->connect_error) {
+        line2('Connection to database failed: ' . $connection->connect_error);
+        exit(1);
+    }
+
+    $sql = sprintf("CREATE DATABASE IF NOT EXISTS `%s`", $databaseName);
+    if ($connection->query($sql) === true) {
+        line2('Database created successfully');
+    } else {
+        line2('Error creating database: ' . $connection->error);
+    }
+
+    $connection->close();
+}
+
+function line($txt)
+{
+    echo $txt . "\n";
+}
+
+function line2($txt)
+{
+    line(" + " . $txt);
+}
