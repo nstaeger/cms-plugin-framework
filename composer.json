@@ -16,7 +16,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Nstaeger\\CmsPluginFramework\\": "src"
+            "Nstaeger\\CmsPluginFramework\\": "src",
+            "Nstaeger\\CmsPluginFramework\\Tests\\": "tests"
         }
     }
 }
