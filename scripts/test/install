@@ -83,7 +83,7 @@ function installTestSuite($version, $destinationDir, $databaseName, $databaseUse
     // TODO make the ABSPATH replacement dynamic
     $wpTestConfig = str_replace(
         array('dirname( __FILE__ ) . \'/src/\'', 'youremptytestdbnamehere', 'yourusernamehere', 'yourpasswordhere', 'localhost'),
-        array('./tmp/wordpress', $databaseName, $databaseUser, $databasePassword, $databaseHost),
+        array('getcwd() . \'/tmp/wordpress/\'', $databaseName, $databaseUser, $databasePassword, $databaseHost),
         $wpTestConfig
     );
     file_put_contents($configDestination, $wpTestConfig);
