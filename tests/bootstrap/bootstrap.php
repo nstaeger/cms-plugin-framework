@@ -10,8 +10,8 @@ $wpTestsDir = getenv('WP_TESTS_DIR') ?: getcwd() .'/tmp/wordpress-tests-lib';
 // Configure Plugin
 if (!defined('PLUGIN_NAME'))
 {
-    define('PLUGIN_NAME', 'plugin-dummy.php');
-    define('PLUGIN_FOLDER', $frameworkRootDir . '/tests/plugin-dummy');
+    define('PLUGIN_NAME', 'plugindummy.php');
+    define('PLUGIN_FOLDER', $frameworkRootDir . '/tests/plugindummy');
     define('PLUGIN_PATH', PLUGIN_FOLDER . '/' . PLUGIN_NAME);
 }
 
