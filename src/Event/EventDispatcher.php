@@ -56,7 +56,7 @@ class EventDispatcher
      *
      * @param string|string[] $events
      * @param callable        $listener
-     * @param int             $priority
+     * @param int             $priority Higher is called first
      */
     public function on($events, $listener, $priority = 0)
     {
@@ -69,7 +69,6 @@ class EventDispatcher
      * Sort the listeners for a given event by priority.
      *
      * @param  string $eventName
-     * @return array
      */
     protected function sortListeners($eventName)
     {
