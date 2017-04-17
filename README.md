@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/nstaeger/cms-plugin-framework.svg?branch=master)](https://travis-ci.org/nstaeger/cms-plugin-framework)
+
 # CMS Plugin Framework
 
 A PHP framework for rapid CMS plugin development. (Currently only supports WordPress)
