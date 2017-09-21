@@ -2,10 +2,11 @@
 
 namespace Nstaeger\CmsPluginFramework\Support;
 
+use InvalidArgumentException;
+
 class Time
 {
     const SQL_FORMAT = 'Y-m-d G:i:s';
-
     /**
      * @var int
      */
@@ -13,12 +14,17 @@ class Time
 
     public static function now()
     {
-        return new Time();
+        return new Time(time());
     }
 
-    private function __construct()
+    public static function of($timestamp)
     {
-        $this->timestamp = time();
+        return new Time($timestamp);
+    }
+
+    private function __construct($timestamp)
+    {
+        $this->timestamp = $timestamp;
     }
 
     public function asSqlTimestamp()
@@ -26,17 +32,31 @@ class Time
         return date(self::SQL_FORMAT, $this->timestamp);
     }
 
-    public function plusMinutes($minutes)
+    public function addMinutes($minutes)
     {
-        return $this->addSeconds($minutes * 60);
+        return $this->addSeconds($this->asInt($minutes) * 60);
     }
 
     public function addSeconds($seconds)
     {
-        if (is_int($seconds)) {
-            $this->timestamp += $seconds;
-        }
+        $this->timestamp += $this->asInt($seconds);
 
         return $this;
+    }
+
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
+
+    private function asInt($v)
+    {
+        if (is_int($v)) {
+            return $v;
+        } else if (is_string($v)) {
+            return intval($v);
+        } else {
+            throw new InvalidArgumentException("Could not convert value to integer");
+        }
     }
 }
