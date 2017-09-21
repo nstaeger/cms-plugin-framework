@@ -15,15 +15,16 @@ interface OptionBroker
      * Retrieve the value of an option.
      *
      * @param string $option unique name of the option
+     * @param mixed $default Optional. Default value to return if the option does not exist.
      * @return mixed
      */
-    function get($option);
+    function get($option, $default = false);
 
     /**
      * Store a value of an option.
      *
      * @param string $option unique name of the option
-     * @param mixed  $value  data to store under this option
+     * @param mixed $value data to store under this option
      */
     function store($option, $value);
 }

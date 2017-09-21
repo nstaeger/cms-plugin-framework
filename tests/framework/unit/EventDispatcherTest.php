@@ -1,6 +1,6 @@
 <?php
 
-namespace Nstaeger\CmsPluginFramework\Tests\Framework\Integration;
+namespace Nstaeger\CmsPluginFramework\Tests\Framework\Unit;
 
 use Nstaeger\CmsPluginFramework\Event\EventDispatcher;
 use PHPUnit_Framework_TestCase;

@@ -25,11 +25,11 @@ class WordpressOptionsBroker implements OptionBroker
         delete_option($this->prefix($option));
     }
 
-    public function get($option)
+    public function get($option, $default = false )
     {
         ArgCheck::notNull($option);
 
-        return get_option($this->prefix($option));
+        return get_option($this->prefix($option), $default);
     }
 
     public function store($option, $value)
