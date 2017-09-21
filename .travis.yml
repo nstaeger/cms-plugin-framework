@@ -7,7 +7,7 @@ env:
 
 install:
   - composer install
-  - ./scripts/test/install test root '' localhost $WP_VERSION
+  - ./_build/test/install test root '' localhost $WP_VERSION
 
 script:
   - phpunit
